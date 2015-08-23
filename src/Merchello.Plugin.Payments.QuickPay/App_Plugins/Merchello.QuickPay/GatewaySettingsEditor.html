@@ -1,0 +1,57 @@
+﻿<div class="umb-panel merchello-side-panel" data-ng-controller="Merchello.Plugin.GatewayProviders.Payments.Dialogs.QuickPayGatewayProviderController">
+
+  <div class="umb-modalcolumn-header">
+    <h4><strong>QuickPay Provider Configuration</strong></h4>
+  </div>
+
+  <div class="umb-panel-body with-header with-footer">
+
+    <div class="control-group row-fluid">
+      <p>API Key</p>
+      <div class="col-xs-12 span12">
+        <input class="col-xs-12 span12" type="text" data-ng-model="quickpaySettings.ApiKey">
+      </div>
+    </div>
+    <div class="control-group row-fluid">
+      <p>Private Key</p>
+      <div class="col-xs-12 span12">
+        <input class="col-xs-12 span12" type="text" data-ng-model="quickpaySettings.PrivateKey">
+      </div>
+    </div>
+    <div class="control-group row-fluid">
+      <p>Merchant Number</p>
+      <div class="col-xs-12 span12">
+        <input class="col-xs-12 span12" type="text" data-ng-model="quickpaySettings.MerchantNumber">
+      </div>
+    </div>
+
+    <!--
+    <ul>
+      <li>Delimited Data: {{quickpaySettings.DelimitedData}}</li>
+      <li>Delimited Char: {{quickpaySettings.DelimitedChar}}</li>
+      <li>Relay Response: {{quickpaySettings.RelayResponse}}</li>
+      <li>API Version: {{quickpaySettings.ApiVersion}}</li>
+    </ul>
+      -->
+  </div>
+
+</div>
+
+
+<div class="umb-panel-footer">
+  <div class="umb-el-wrap umb-panel-buttons">
+    <div class="btn-toolbar umb-btn-toolbar pull-right">
+
+      <a href data-ng-click="close()" class="btn btn-link">
+        <localize key="general_cancel">Cancel</localize>
+      </a>
+
+      <a href
+         class="btn btn-primary"
+         data-ng-click="submit(dialogData)">
+        <localize key="buttons_save">Save</localize>
+      </a>
+
+    </div>
+  </div>
+</div>
