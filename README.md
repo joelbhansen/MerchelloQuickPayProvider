@@ -1,6 +1,6 @@
 # MerchelloQuickPayProvider
 
-This may be the first payment provider for Merchello, with support for the type of payment gateway so common in Scandinavia.
+This may be the first payment provider for Merchello, with support for the type of payment gateway so common in Scandinavia (QuickPay, ePay [DK], DIBS, Curanet/Wannafind, DanDomain). For this reason, it also differs from other available providers.
 
 ## How to use
 
