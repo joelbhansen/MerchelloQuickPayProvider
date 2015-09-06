@@ -54,6 +54,11 @@ namespace Merchello.Plugin.Payments.QuickPay.Controllers {
         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
       }
 
+      if (!callbackInput.Accepted) {
+        LogHelper.Info<CallbackController>("Payment not accepted by QuickPay");
+        return Content("Payment not accepted by QuickPay");
+      }
+
       var invoiceNumber = int.Parse(callbackInput.Order_Id);
       var invoice = MerchelloContext.Current.Services.InvoiceService.GetByInvoiceNumber(invoiceNumber);
 
