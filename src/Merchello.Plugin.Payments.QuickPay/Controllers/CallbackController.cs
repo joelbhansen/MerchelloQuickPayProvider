@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -24,14 +24,14 @@ using Umbraco.Web.Mvc;
 namespace Merchello.Plugin.Payments.QuickPay.Controllers {
 
   public class CallbackController : Controller {
-    
+
     public ActionResult Callback(string id) {
 
-    var checkSum = Request.Headers["QuickPay-Checksum-SHA256"];
+      var checkSum = Request.Headers["QuickPay-Checksum-SHA256"];
 
       // Get the Payload data
-      Stream req = Request.InputStream;
-      req.Seek(0, System.IO.SeekOrigin.Begin);
+      var req = Request.InputStream;
+      req.Seek(0, SeekOrigin.Begin);
       var json = new StreamReader(req).ReadToEnd();
 
       LogHelper.Info<CallbackController>(() => "[BODY] : " + json);
@@ -42,7 +42,7 @@ namespace Merchello.Plugin.Payments.QuickPay.Controllers {
 
 
       if (!checkSum.Equals(compute)) {
-        LogHelper.Warn<CallbackController>("checkSum did not compute : " + checkSum + "\r\n" + json);
+        LogHelper.Warn<CallbackController>("Checksum did not compute : " + checkSum + "\r\n" + json);
         throw new Exception("MD5 Check does not compute");
       }
 
@@ -59,11 +59,16 @@ namespace Merchello.Plugin.Payments.QuickPay.Controllers {
         return Content("Payment not accepted by QuickPay");
       }
 
+      if (callbackInput.Order_Id.StartsWith("test_")) {
+        LogHelper.Warn<CallbackController>("QuickPay is in test mode. The payment provider is unable to identify the invoice to apply the payment to, since the order_id was returned as " + callbackInput.Order_Id);
+        return Content("QuickPay Test Mode Detected");
+      }
+
       var invoiceNumber = int.Parse(callbackInput.Order_Id);
       var invoice = MerchelloContext.Current.Services.InvoiceService.GetByInvoiceNumber(invoiceNumber);
 
-      var paymentGatewayMethod = MerchelloContext.Current.Gateways.Payment.GetPaymentGatewayMethods().Single(x => x.PaymentMethod.Name == "QuickPay");
-
+      var paymentGatewayMethod = MerchelloContext.Current.Gateways.Payment.GetPaymentGatewayMethods().Single(x => x.PaymentMethod.ProviderKey == Guid.Parse(Constants.ProviderId));
+      
       var args = new ProcessorArgumentCollection();
       args.Add(Constants.ExtendedDataKeys.PaymentCurrency, callbackInput.Currency);
       args.Add(Constants.ExtendedDataKeys.PaymentAmount, callbackInput.Operations.Where(x => !x.Pending).Sum(x => x.Amount).ToString("F0"));
@@ -73,7 +78,7 @@ namespace Merchello.Plugin.Payments.QuickPay.Controllers {
 
       Notification.Trigger("OrderConfirmation", paymentResult, new[] { invoice.BillToEmail });
 
-      
+
       return Content("Hello QuickPay");
     }
 
@@ -90,6 +95,6 @@ namespace Merchello.Plugin.Payments.QuickPay.Controllers {
 
       return s.ToString();
     }
-    
+
   }
 }
